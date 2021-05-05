@@ -25,11 +25,11 @@ snake_body = [[30, 30*10], [30*2, 30*10], [30*3, 30*10]]
 
 
 fruit_pos = [random.randrange(30, screen_width-30,30),random.randrange(30, screen_height-30,30)]
-fruits = [pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/images/banana.png'),
-          pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/images/orange.png'),
-          pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/images/apple.png'),
-          pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/images/watermelon.png'),
-          pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/images/pineapple.png'),
+fruits = [pygame.image.load('C:/Users/user/Desktop/python_projects/python_snake_game/images/banana.png'),
+          pygame.image.load('C:/Users/user/Desktop/python_projects/python_snake_game/images/orange.png'),
+          pygame.image.load('C:/Users/user/Desktop/python_projects/python_snake_game/images/apple.png'),
+          pygame.image.load('C:/Users/user/Desktop/python_projects/python_snake_game/images/watermelon.png'),
+          pygame.image.load('C:/Users/user/Desktop/python_projects/python_snake_game/images/pineapple.png'),
         ]
 fruit_decide = random.randint(0,len(fruits)-1)
 
