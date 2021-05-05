@@ -18,83 +18,84 @@ clock = pygame.time.Clock()
 # 배경, 캐릭터 설정
 background = pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/background.png')
 
+
 snake = pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/snake.png')
 snake_size = snake.get_rect().size
 snake_width = snake_size[0]
 snake_height = snake_size[1]
-snake_x_pos = 0
-snake_y_pos = 0
-snake_speed = 0.1
-
+snake_pos = [2*snake_width, screen_height/2 - snake_height/2] # 초기 위치
+snake_body = [[0, screen_height/2 - snake_height/2], [snake_width, screen_height/2 - snake_height/2], [2*snake_width, screen_height/2 - snake_height/2]] # 뱀 몸의 초기 위치
 
 food = pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/food.png')
 food_size = food.get_rect().size
 food_width = food_size[0]
 food_height = food_size[1]
-food_x_pos = random.randint(0, screen_width-food_width)
-food_y_pos = random.randint(0, screen_height-food_height)
+food_pos = [random.randrange(30, screen_width-30), random.randrange(30, screen_height-30)]
 
 
-to_x = 0
-to_y = 0
-
+direction = 'right'
+score = 0
+font = pygame.font.SysFont('comicsans',40)
 #이벤트 루프
 running = True
 
 while running:
-  dt = clock.tick(30)
+  dt = clock.tick(10)
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running=False
-    
+
     if event.type == pygame.KEYDOWN:
-      if event.key == pygame.K_LEFT:
-        to_x -= snake_speed
-        to_y=0
-      elif event.key == pygame.K_RIGHT:
-        to_x += snake_speed
-        to_y=0
-      elif event.key == pygame.K_UP:
-        to_y -= snake_speed
-        to_x=0
-      elif event.key == pygame.K_DOWN:
-        to_y += snake_speed
-        to_x=0
-
-     
-  snake_x_pos += to_x * dt
-  snake_y_pos += to_y * dt
-
-  if snake_x_pos < 0:
-    snake_x_pos = 0
-  elif snake_x_pos > screen_width-snake_width:
-    snake_x_pos = screen_width - snake_width
+      if event.key == pygame.K_LEFT and direction != 'right':
+        direction = 'left'
+      elif event.key == pygame.K_RIGHT and direction != 'left':
+        direction = 'right'
+      elif event.key == pygame.K_UP and direction != 'down':
+        direction = 'up'
+      elif event.key == pygame.K_DOWN and direction != 'up':
+        direction = 'down'
+ 
+  if direction == 'right':
+      snake_pos[0] += snake_width
+  elif direction == 'left':
+      snake_pos[0] -= snake_width
+  elif direction == 'up':
+      snake_pos[1] -= snake_width
+  elif direction == 'down':
+      snake_pos[1] += snake_width
   
-  if snake_y_pos < 0 :
-    snake_y_pos = 0
-  elif snake_y_pos > screen_height - snake_height:
-    snake_y_pos = screen_height - snake_height
-
   # 충돌처리
-  snake_rect= snake.get_rect()
-  snake_rect.left = snake_x_pos
-  snake_rect.top = snake_y_pos
+  if snake_pos[0] + snake_width <= 0 or snake_pos[0] >= screen_width:
+    running = False
+  
+  if snake_pos[1] <= 0 or snake_pos[1] >= screen_height:
+    running = False
 
-  food_rect = food.get_rect()
-  food_rect.left = food_x_pos
-  food_rect.top = food_y_pos
-
-  if snake_rect.colliderect(food_rect):
-    food_x_pos = random.randint(0, screen_width-food_width)
-    food_y_pos = random.randint(0, screen_height-food_height)
-
+  for square in snake_body[1:]:
+    if pygame.Rect(square[0], square[1], 30, 30).colliderect(pygame.Rect(snake_pos[0], snake_pos[1], 30, 30)):
+      running = False
+  
+  # 그리기
   screen.blit(background, (0, 0))
-  screen.blit(snake, (snake_x_pos, snake_y_pos))
-  screen.blit(food, (food_x_pos, food_y_pos))
+
+  for square in snake_body:
+    screen.blit(snake, (square[0], square[1]))
+
+  screen.blit(food, (food_pos[0], food_pos[1]))
+
+  snake_body.append(list(snake_pos))
+  
+
+  if pygame.Rect(snake_pos[0],snake_pos[1],30,30).colliderect(pygame.Rect(food_pos[0],food_pos[1],30,30)):
+    food_pos = [random.randrange(30, screen_width-30), random.randrange(30, screen_height-30)]
+    score += 5
+  else:
+    snake_body.pop(0)
+
+  score_font = font.render(f'{score}' , True , (255,255,255))
+  font_pos = score_font.get_rect(center=(screen_width/2 , 30))
+  screen.blit(score_font , font_pos)
 
   pygame.display.update()
     
-
-
-
 pygame.quit()
