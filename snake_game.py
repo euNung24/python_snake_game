@@ -26,6 +26,7 @@ snake_x_pos = 0
 snake_y_pos = 0
 snake_speed = 0.1
 
+
 food = pygame.image.load('C:/Users/user/Desktop/python_projects/snake_game/food.png')
 food_size = food.get_rect().size
 food_width = food_size[0]
@@ -46,20 +47,19 @@ while running:
     if event.type == pygame.QUIT:
       running=False
     
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-          to_x -= snake_speed
-          to_y=0
-          
-        elif event.key == pygame.K_RIGHT:
-          to_x += snake_speed
-          to_y=0
-        elif event.key == pygame.K_UP:
-          to_y -= snake_speed
-          to_x=0
-        elif event.key == pygame.K_DOWN:
-          to_y += snake_speed
-          to_x=0
+    if event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_LEFT:
+        to_x -= snake_speed
+        to_y=0
+      elif event.key == pygame.K_RIGHT:
+        to_x += snake_speed
+        to_y=0
+      elif event.key == pygame.K_UP:
+        to_y -= snake_speed
+        to_x=0
+      elif event.key == pygame.K_DOWN:
+        to_y += snake_speed
+        to_x=0
 
      
   snake_x_pos += to_x * dt
@@ -74,6 +74,19 @@ while running:
     snake_y_pos = 0
   elif snake_y_pos > screen_height - snake_height:
     snake_y_pos = screen_height - snake_height
+
+  # 충돌처리
+  snake_rect= snake.get_rect()
+  snake_rect.left = snake_x_pos
+  snake_rect.top = snake_y_pos
+
+  food_rect = food.get_rect()
+  food_rect.left = food_x_pos
+  food_rect.top = food_y_pos
+
+  if snake_rect.colliderect(food_rect):
+    food_x_pos = random.randint(0, screen_width-food_width)
+    food_y_pos = random.randint(0, screen_height-food_height)
 
   screen.blit(background, (0, 0))
   screen.blit(snake, (snake_x_pos, snake_y_pos))
